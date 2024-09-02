@@ -1,0 +1,14 @@
+##############################################################
+#
+# List of approvers/reviewers
+#
+##############################################################
+#
+# Get in touch with us via the AI Talent Hub Community
+# 
+# Learn about CODEOWNERS file format: 
+#  https://help.github.com/en/articles/about-code-owners
+#
+
+# These owners will be the default owners for everything in the repo.
+* @edubskiy
