@@ -1,0 +1,9 @@
+model: {
+  
+  name: {
+    t5-base: 'r1char9/T5_chat',
+    llm: "meta-llama/Llama-2-7b-chat-hf"
+  },
+  
+  hf_token: ...
+}
