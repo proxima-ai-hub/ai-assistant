@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+
+  api:
+    build: 
+      context: ./backend
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
+    volumes:
+      - .:/app
+    ports:
+      - 8000:80
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  
+  worker:
+    build: 
+      context: ./backend
+    command: celery -A celery_worker worker -P solo --loglevel=info
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6380:6379
