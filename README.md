@@ -1,4 +1,4 @@
-# ai-assistant-ui
+# Proxima AI Assistant
 User Interface for Support AI Assistant
 
 ## Branching Naming Conventions
