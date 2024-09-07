@@ -1,5 +1,5 @@
 # Proxima AI Assistant
-User Interface for Support AI Assistant
+AI Assistant for automated support
 
 ## Branching Naming Conventions
 
