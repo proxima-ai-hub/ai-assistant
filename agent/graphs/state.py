@@ -6,4 +6,5 @@ from langchain_core.messages import BaseMessage
 
 
 class State(BaseModel):
+    catalog_name: str = None
     history: List[BaseMessage]

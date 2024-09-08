@@ -1,5 +1,5 @@
 from typing import Dict, Literal
-from langchain_core.messages import FunctionMessage
+from langchain_core.messages import AIMessage
 
 from agent.nodes._base import _BaseRouter
 from agent.graphs.state import State
@@ -20,18 +20,19 @@ class ClassifierRouter(_BaseRouter):
         self.show_logs = show_logs
 
     def invoke(self, state: State) -> Literal["rag", "operator"]:
-        classifier_output = state.history[-1]
-
-        if not isinstance(classifier_output, FunctionMessage):
-            raise TypeError("Classifier Router accepts only ClassifierNode output")
+        catalog_name = state.catalog_name
+        question = state.history[-1].content if isinstance(state.history[-1], AIMessage) else None
 
         if self.show_logs:
             print(self.name)
-            print(f"Classifier output: {classifier_output.content}")
-            print(f"Model answer: {self.mapping[classifier_output.content]}")
+            print(f"Catalog name: {catalog_name}")
+            print(f"Question to user: {question}")
             print("----------------")
 
-        if classifier_output.content != "operator":
-            return "rag"
+        if catalog_name:
+            if catalog_name == "оператор":
+                return "оператор"
+            else:
+                return "rag"
         else:
-            return "operator"
+            return "end"
