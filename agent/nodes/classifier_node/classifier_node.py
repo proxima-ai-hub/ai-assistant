@@ -1,9 +1,10 @@
 from langchain_core.output_parsers import StrOutputParser, BaseOutputParser
-from langchain_core.messages import AIMessage
+from langchain_core.messages import FunctionMessage
 
 from .prompt import CLASSIFIER_NODE_PROMPT
 from agent.nodes._base import _BaseNode
 from agent.llms._base import _BaseLLM
+from agent.graphs.state import State
 
 
 class ClassifierNode(_BaseNode):
@@ -28,7 +29,7 @@ class ClassifierNode(_BaseNode):
                   for ind, message in enumerate(history)]
         return "\n".join(result)
 
-    def invoke(self, state):
+    def invoke(self, state: State):
         history = state.history
         answer = self.chain.invoke({"history": self._history_to_str(history)})
 
@@ -36,6 +37,7 @@ class ClassifierNode(_BaseNode):
             print(self.name)
             print(f"User query: {history[-1]}")
             print(f"Model answer: {answer}")
+            print("----------------")
 
-        history.append(AIMessage(content=answer))
+        history.append(FunctionMessage(name="ClassifierNode", content=answer))
         return {"history": history}

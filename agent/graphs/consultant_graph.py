@@ -1,13 +1,13 @@
 from langchain_core.messages import AIMessage, HumanMessage, BaseMessage
 from langgraph.graph import END, START, StateGraph
 
-from agent.nodes import ClassifierNode
+from agent.nodes import ClassifierNode, ClassifierRouter, RAGNode
 from agent.llms import LlamaLLM
 from agent.graphs import State
 
 
 class ConsultantGraph:
-    def __init__(self, show_logs=False) -> None:
+    def __init__(self, show_logs: bool = False) -> None:
         self.llm = LlamaLLM("llama_3.1 from ollama", "llama3.1")
         self.show_logs = show_logs
 
@@ -24,12 +24,33 @@ class ConsultantGraph:
             llm=self.llm,
             show_logs=self.show_logs
         )
+        classifier_router = ClassifierRouter(
+            name="Classifier Router",
+            description=ClassifierRouter.__doc__,
+            mapping={
+                "rag": "rag",
+                "operator": END,
+            },
+            show_logs=self.show_logs
+        )
+        rag_node = RAGNode(
+            name="Classifier Node",
+            description=ClassifierNode.__doc__,
+            show_logs=self.show_logs
+        )
+
+        # Add nodes to graph
+        graph.add_node("classifier", classifier_node.invoke)
+        graph.add_node("rag", rag_node.invoke)
 
         # Set up graph relations
-        graph.add_node("classifier", classifier_node.invoke)
-
         graph.add_edge(START, "classifier")
-        graph.add_edge("classifier", END)
+        graph.add_conditional_edges(
+            "classifier",
+            classifier_router.invoke,
+            classifier_router.mapping,
+        )
+        graph.add_edge("rag", END)
 
         return graph.compile()
     
