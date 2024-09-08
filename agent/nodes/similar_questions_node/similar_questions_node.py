@@ -7,18 +7,11 @@ from agent.llms._base import _BaseLLM
 from agent.graphs import State
 
 
-class RAGNode(_BaseNode):
+class SimilarQuestionsNode(_BaseNode):
     """
     RAG Node to pull relevant information based on user input.
     """
     DATABASE_COLLECTION_NAME = "original_data_collection"
-    CATALOG_NAME_TO_CATALOG = {
-        "health": "здоровье",
-        "account": "аккаунт",
-        "finance": "финансы",
-        "career": "работа",
-        "documents": "документы",
-    }
 
     def __init__(
             self,
@@ -37,21 +30,19 @@ class RAGNode(_BaseNode):
 
     def invoke(self, state: State):
         history = state.history
-        catalog_name = state.catalog_name
+        summary = self.get_summary(history)
         retrieved_info = self.retriever.search(
-            query=self.get_summary(history),
-            collection_name=RAGNode.DATABASE_COLLECTION_NAME,
-            filter_options={"catalog": catalog_name},
-            topk=5,
+            query=summary,
+            collection_name=SimilarQuestionsNode.DATABASE_COLLECTION_NAME,
+            topk=1,
+            score_threshold=0.75
         )
 
         if self.show_logs:
             print(self.name)
-            print(f"Summary: {self.get_summary(history)}")
-            print(f"Going to catalog: {catalog_name}")
             print(f"Retrieved data: {retrieved_info}")
-            print("----------------")
+            print("---------------")
 
-        history.append(FunctionMessage(name="RAGNode", content=retrieved_info))
+        history.append(FunctionMessage(name="SimilarQuestionsNode", content=retrieved_info))
 
-        return {"history": history, "catalog_name": catalog_name}
+        return {"history": history, "catalog_name": state.catalog_name}

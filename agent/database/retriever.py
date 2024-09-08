@@ -49,7 +49,14 @@ class Retriever:
         
         return embeddings
     
-    def search(self, query: str, collection_name: str, topk: int = 20, filter_options: dict = None):
+    def search(
+            self,
+            query: str,
+            collection_name: str,
+            topk: int = 10,
+            filter_options: dict = None,
+            score_threshold: float = None
+        ):
         embedding = self.encode(query)
         results = self._client.search(
             collection_name,
@@ -60,7 +67,8 @@ class Retriever:
                     models.FieldCondition(key=k, match=models.MatchValue(value=v))
                     for k, v in filter_options.items()
                 ]
-            ) if filter_options else None
+            ) if filter_options else None,
+            score_threshold=score_threshold
         )
 
         return results
@@ -85,8 +93,8 @@ class Retriever:
                         id=idx,
                         vector=embeddings[idx],
                         payload={
-                            "question": row["question"],
-                            "content": row["content"],
+                            "question": row["question_changed"],
+                            "content": row["content_changed"],
                             "category": row["category"],
                             "catalog": row["catalog"]
                         }

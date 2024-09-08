@@ -11,7 +11,8 @@ if __name__ == "__main__":
     # )
 
     print(retriever.search(
-        "Могу ли я заправляться по топливной карте?",
+        "В личном кабинете нет вкладки передать в архив",
         "original_data_collection",
         topk=1,
+        filter_options={"catalog": "аккаунт"}
     ))    
