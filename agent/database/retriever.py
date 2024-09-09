@@ -10,6 +10,7 @@ import pandas as pd
 
 class ModelType(Enum):
     RUBERT_TINY_2 = "cointegrated/rubert-tiny2"
+    DEEPVK_USER = "deepvk/USER-bge-m3"
 
 
 class Retriever:
@@ -30,6 +31,11 @@ class Retriever:
                 ModelType.RUBERT_TINY_2.value,
                 device=self._device
             )
+        elif self._model_type == ModelType.DEEPVK_USER:
+            model = SentenceTransformer(
+                ModelType.DEEPVK_USER.value,
+                device=self._device
+            )
         else:
             raise NotImplementedError()
 
@@ -44,6 +50,8 @@ class Retriever:
     def encode(self, text: Union[List[str], str]):
         if self._model_type == ModelType.RUBERT_TINY_2:
             embeddings = self._model.encode(text)
+        elif self._model_type == ModelType.DEEPVK_USER:
+            embeddings = self._model.encode(text, normalize_embeddings=True)
         else:
             raise NotImplementedError()
         
