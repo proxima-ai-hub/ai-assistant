@@ -61,6 +61,9 @@ def get_answers(data: pd.DataFrame, graph: ConsultantGraph):
 def offline_classification_metrics(catalogs, catalogs_predicted):
     catalogs_encoded = list(map(catalogs_to_id.get, catalogs))
     catalogs_predicted_encoded = list(map(catalogs_to_id.get, catalogs_predicted))
+    print(set(catalogs_encoded))
+    print(set(catalogs_predicted_encoded))
+
     report = classification_report(
         catalogs_encoded, catalogs_predicted_encoded,
         target_names=list(catalogs_to_id.keys()),
@@ -71,27 +74,27 @@ def offline_classification_metrics(catalogs, catalogs_predicted):
 
 
 def offline_answer_metrics(llm, gt, predicted, base_path):
-    # assert len(gt) == len(predicted)
+    assert len(gt) == len(predicted)
 
-    # result = {
-    #     "true": [],
-    #     "pred": [],
-    #     "score": []
-    # }
-    # for answer_gt, answer_pred in tqdm(zip(gt, predicted)):
-    #     answer = llm.invoke({
-    #         "gt": answer_gt,
-    #         "answer": answer_pred
-    #     })
-    #     result["true"].append(answer_gt)
-    #     result["pred"].append(answer_pred)
-    #     result["score"].append(answer.content)
+    result = {
+        "true": [],
+        "pred": [],
+        "score": []
+    }
+    for answer_gt, answer_pred in tqdm(zip(gt, predicted)):
+        answer = llm.invoke({
+            "gt": answer_gt,
+            "answer": answer_pred
+        })
+        result["true"].append(answer_gt)
+        result["pred"].append(answer_pred)
+        result["score"].append(answer.content)
 
-    # with open(base_path / "scores_llama3.1.json", "w+", encoding="utf-8") as file:
-    #     json.dump(result, file, ensure_ascii=False, indent=4)
+    with open(base_path / "scores_llama3.1_deepvk.json", "w+", encoding="utf-8") as file:
+        json.dump(result, file, ensure_ascii=False, indent=4)
 
-    with open(base_path / "scores_llama3.1.json", "r", encoding="utf-8") as file:
-        result = json.load(file)
+    # with open(base_path / "scores_llama3.1.json", "r", encoding="utf-8") as file:
+    #     result = json.load(file)
 
     data_pd = pd.DataFrame(result)
     data_pd["score"] = data_pd["score"].astype("int")
@@ -110,6 +113,8 @@ def offline_answer_metrics(llm, gt, predicted, base_path):
 
 
 if __name__ == "__main__":
+    base_path = Path(__file__).parent.resolve()
+
     llm = ChatOpenAI(
         api_key=config["OPENAI_API_KEY"],
         model="gpt-4o-mini",
@@ -118,23 +123,22 @@ if __name__ == "__main__":
     template = PromptTemplate.from_template(prompt)
     model = template | llm
 
-    graph = ConsultantGraph(show_logs=False)
-    base_path = Path(__file__).parent.resolve()
+    # graph = ConsultantGraph(show_logs=False)
 
     # data = pd.read_csv(base_path / "benchmark_questions.csv")
     # answers, catalogs = get_answers(data, graph)
     # answers_table = data.copy()
     # answers_table["predicted"] = answers
     # answers_table["predicted_catalogs"] = catalogs
-    # answers_table.to_csv(base_path / "llama3.1_results.csv", index=False)
+    # answers_table.to_csv(base_path / "llama3.1_deepvk_results.csv", index=False)
 
-    answers_table = pd.read_csv(base_path / "llama3.1_results.csv")
+    answers_table = pd.read_csv(base_path / "llama3.1_deepvk_results.csv")
 
     cls_metrics = offline_classification_metrics(
         answers_table["catalog"],
         catalogs_predicted=answers_table["predicted_catalogs"]
     )
-    with open(base_path / "metrics_llama3.1.json", "w+") as file:
+    with open(base_path / "metrics_llama3.1_deepvk.json", "w+") as file:
         json.dump(cls_metrics, file, ensure_ascii=False, indent=4)
 
     llm_metrics = offline_answer_metrics(
@@ -144,5 +148,5 @@ if __name__ == "__main__":
         base_path
     )
 
-    with open(base_path / "llm_metrics_llama3.1.json", "w+", encoding="utf-8") as file:
+    with open(base_path / "llm_metrics_llama3.1_deepvk.json", "w+", encoding="utf-8") as file:
         json.dump(llm_metrics, file, ensure_ascii=False, indent=4)

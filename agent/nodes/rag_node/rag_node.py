@@ -11,14 +11,8 @@ class RAGNode(_BaseNode):
     """
     RAG Node to pull relevant information based on user input.
     """
-    DATABASE_COLLECTION_NAME = "original_data_collection"
-    CATALOG_NAME_TO_CATALOG = {
-        "health": "здоровье",
-        "account": "аккаунт",
-        "finance": "финансы",
-        "career": "работа",
-        "documents": "документы",
-    }
+    # DATABASE_COLLECTION_NAME = "original_data_collection"
+    DATABASE_COLLECTION_NAME = "original_data_deepvk_collection"
 
     def __init__(
             self,
@@ -43,6 +37,7 @@ class RAGNode(_BaseNode):
             collection_name=RAGNode.DATABASE_COLLECTION_NAME,
             filter_options={"catalog": catalog_name},
             topk=5,
+            score_threshold=0.5
         )
 
         if self.show_logs:

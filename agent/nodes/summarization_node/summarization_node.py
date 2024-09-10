@@ -34,14 +34,14 @@ class SummarizationNode(_BaseNode):
 
     def invoke(self, state: State):
         history = state.history
-        answer = self.chain.invoke({"history": self._history_to_str(history)})
+        # answer = self.chain.invoke({"query": history[-1].content})
 
         if self.show_logs:
             print(self.name)
             print(f"User query: {history[-1]}")
-            print(f"Model answer: {answer}")
+            print(f"Model answer: {history[-1].content}")
             print("----------------")
 
-        history.append(FunctionMessage(name="SummarizationNode", content=answer))
+        history.append(FunctionMessage(name="SummarizationNode", content=history[-1].content))
 
         return {"history": history, "catalog_name": state.catalog_name}
