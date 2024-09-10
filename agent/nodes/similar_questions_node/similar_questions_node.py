@@ -11,7 +11,7 @@ class SimilarQuestionsNode(_BaseNode):
     """
     RAG Node to pull relevant information based on user input.
     """
-    DATABASE_COLLECTION_NAME = "original_data_collection"
+    DATABASE_COLLECTION_NAME = "original_data_deepvk_collection"
 
     def __init__(
             self,

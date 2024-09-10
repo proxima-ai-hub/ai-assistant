@@ -9,6 +9,8 @@ from agent.nodes import (
     SimilarQuestionsNode,
     AnswerNode,
     OperatorNode,
+    NoInfoNode,
+    RAGRouter
 )
 from agent.database import Retriever, ModelType
 from agent.llms import LlamaLLM
@@ -26,7 +28,7 @@ class ConsultantGraph:
     
     def _build_graph(self):
         graph = StateGraph(State)
-        retriever = Retriever(ModelType.RUBERT_TINY_2)
+        retriever = Retriever(ModelType.DEEPVK_USER)
         
         # Initialize nodes
         summarization_node = SummarizationNode(
@@ -53,6 +55,7 @@ class ConsultantGraph:
             mapping={
                 "rag": "rag",
                 "оператор": "operator",
+                "no_info": "no_info",
                 "end": END,
             },
             show_logs=self.show_logs
@@ -74,6 +77,19 @@ class ConsultantGraph:
             description=OperatorNode.__doc__,
             show_logs=self.show_logs,
         )
+        no_info_node = NoInfoNode(
+            name="NoInfoNode",
+            description=NoInfoNode.__doc__,
+        )
+        rag_router = RAGRouter(
+            name="RAGRouter",
+            description=RAGRouter.__doc__,
+            mapping={
+                "answer": "answer",
+                "no_info": "no_info"
+            },
+            show_logs=self.show_logs
+        )
 
         # Add nodes to graph
         graph.add_node("summarization", summarization_node.invoke)
@@ -82,6 +98,7 @@ class ConsultantGraph:
         graph.add_node("rag", rag_node.invoke)
         graph.add_node("answer", answer_node.invoke)
         graph.add_node("operator", operator_node.invoke)
+        graph.add_node("no_info", no_info_node.invoke)
 
         # Set up graph relations
         graph.add_edge(START, "summarization")
@@ -92,9 +109,14 @@ class ConsultantGraph:
             classifier_router.invoke,
             classifier_router.mapping,
         )
-        graph.add_edge("rag", "answer")
+        graph.add_conditional_edges(
+            "rag",
+            rag_router.invoke,
+            rag_router.mapping,
+        )
         graph.add_edge("answer", END)
         graph.add_edge("operator", END)
+        graph.add_edge("no_info", END)
 
         return graph.compile()
     

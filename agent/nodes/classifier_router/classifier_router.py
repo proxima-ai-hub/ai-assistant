@@ -21,17 +21,24 @@ class ClassifierRouter(_BaseRouter):
 
     def invoke(self, state: State) -> Literal["rag", "operator"]:
         catalog_name = state.catalog_name
-        question = state.history[-1].content if isinstance(state.history[-1], AIMessage) else None
 
         if self.show_logs:
             print(self.name)
             print(f"Catalog name: {catalog_name}")
-            print(f"Question to user: {question}")
             print("----------------")
 
         if catalog_name:
             if catalog_name == "оператор":
                 return "оператор"
+            elif catalog_name not in (
+                "здоровье",
+                "финансы",
+                "аккаунт",
+                "работа",
+                "оператор",
+                "документы",
+            ):
+                return "no_info"
             else:
                 return "rag"
         else:

@@ -2,6 +2,7 @@ from typing import List
 
 from langchain_core.output_parsers import StrOutputParser, BaseOutputParser
 from langchain_core.messages import BaseMessage, AIMessage
+import pandas as pd
 
 from .prompt import ANSWER_NODE_PROMPT
 from agent.nodes._base import _BaseNode
@@ -29,6 +30,10 @@ class AnswerNode(_BaseNode):
         rag_answer = history[-1].content
         result = {x['payload']['question']: x['payload']['content']
                   for x in rag_answer}
+        # result = {"question": [x['payload']['question'] for x in rag_answer],
+        #           "correct_answer": [x['payload']['content'] for x in rag_answer]}
+        # result = pd.DataFrame(result).to_markdown()
+
         # result = [f"{x['payload']['question']} - {x['payload']['content']}"
         #           for x in rag_answer]
         # return "\n".join(result)
