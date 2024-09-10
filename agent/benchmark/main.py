@@ -61,6 +61,7 @@ def get_answers(data: pd.DataFrame, graph: ConsultantGraph):
 def offline_classification_metrics(catalogs, catalogs_predicted):
     catalogs_encoded = list(map(catalogs_to_id.get, catalogs))
     catalogs_predicted_encoded = list(map(catalogs_to_id.get, catalogs_predicted))
+    catalogs_predicted_encoded = [x if x else 0 for x in catalogs_predicted_encoded]
     print(set(catalogs_encoded))
     print(set(catalogs_predicted_encoded))
 
@@ -130,15 +131,15 @@ if __name__ == "__main__":
     # answers_table = data.copy()
     # answers_table["predicted"] = answers
     # answers_table["predicted_catalogs"] = catalogs
-    # answers_table.to_csv(base_path / "llama3.1_deepvk_results.csv", index=False)
+    # answers_table.to_csv(base_path / "mistral_deepvk_results.csv", index=False)
 
-    answers_table = pd.read_csv(base_path / "llama3.1_deepvk_results.csv")
+    answers_table = pd.read_csv(base_path / "mistral_deepvk_results.csv")
 
     cls_metrics = offline_classification_metrics(
         answers_table["catalog"],
         catalogs_predicted=answers_table["predicted_catalogs"]
     )
-    with open(base_path / "metrics_llama3.1_deepvk.json", "w+") as file:
+    with open(base_path / "metrics_mistral_deepvk.json", "w+") as file:
         json.dump(cls_metrics, file, ensure_ascii=False, indent=4)
 
     llm_metrics = offline_answer_metrics(
@@ -148,5 +149,5 @@ if __name__ == "__main__":
         base_path
     )
 
-    with open(base_path / "llm_metrics_llama3.1_deepvk.json", "w+", encoding="utf-8") as file:
+    with open(base_path / "llm_metrics_mistral_deepvk.json", "w+", encoding="utf-8") as file:
         json.dump(llm_metrics, file, ensure_ascii=False, indent=4)

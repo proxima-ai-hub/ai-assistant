@@ -45,6 +45,7 @@ class ClassifierNode(_BaseNode):
             print(f"Model answer: {answer}")
             print("----------------")
 
-        catalog_name = answer
+        catalog_name = answer.strip()
+        print(len(catalog_name))
 
         return {"history": history, "catalog_name": catalog_name}

@@ -19,7 +19,7 @@ from agent.graphs import State
 
 class ConsultantGraph:
     def __init__(self, show_logs: bool = False) -> None:
-        self.llm = LlamaLLM("llama_3.1 from ollama", "temp0:latest")
+        self.llm = LlamaLLM("llama_3.1 from ollama", "mistral:latest")
         self.show_logs = show_logs
 
         self.graph = self._build_graph()
