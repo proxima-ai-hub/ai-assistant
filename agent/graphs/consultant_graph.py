@@ -18,13 +18,15 @@ from agent.graphs import State
 
 
 class ConsultantGraph:
-    def __init__(self, show_logs: bool = False) -> None:
+    def __init__(self, show_logs: bool = False, save_online_metric: bool = False) -> None:
         self.llm = LlamaLLM("llama_3.1 from ollama", "temp0:latest")
         self.show_logs = show_logs
+        self.save_online_metric = save_online_metric
 
         self.graph = self._build_graph()
         self.history = [AIMessage(content="Привет, я бот-консультант, чем могу помочь?")]
         self.catalog_name = None
+        self.hallucination = []
     
     def _build_graph(self):
         graph = StateGraph(State)
@@ -70,7 +72,8 @@ class ConsultantGraph:
             name="AnswerNode",
             description=AnswerNode.__doc__,
             llm=self.llm,
-            show_logs=self.show_logs
+            show_logs=self.show_logs,
+            save_online_metric = self.save_online_metric
         )
         operator_node = OperatorNode(
             name="OperatorNode",
@@ -128,10 +131,12 @@ class ConsultantGraph:
         self.history.append(HumanMessage(content=query))
         answer = self.graph.invoke(
             {"history": self.history,
-             "catalog_name": self.catalog_name}
+             "catalog_name": self.catalog_name,
+             "hallucination": self.hallucination}
         )
         self.history = answer["history"]
         self.catalog_name = answer["catalog_name"]
+        self.hallucination = answer["hallucination"]
 
         return answer["history"][-1]
 
@@ -151,6 +156,8 @@ class ConsultantGraph:
             self._print_message()
             print("HISTORY OF MESSAGES")
             print(self.history)
+            print("Scores")
+            print(self.hallucination)
             self.clear_history()
             print()
             print()

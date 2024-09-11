@@ -1,6 +1,7 @@
 from typing import List
 
 from langchain_core.output_parsers import StrOutputParser, BaseOutputParser
+from langchain.evaluation import load_evaluator, EvaluatorType
 from langchain_core.messages import BaseMessage, AIMessage
 import pandas as pd
 
@@ -21,10 +22,14 @@ class AnswerNode(_BaseNode):
             llm: _BaseLLM,
             prompt: str = ANSWER_NODE_PROMPT,
             output_parser: BaseOutputParser = StrOutputParser(),
-            show_logs: bool = False
+            show_logs: bool = False,
+            save_online_metric: bool = False,
         ) -> None:
         super().__init__(name, description, llm, prompt, output_parser)
         self.show_logs = show_logs
+        self.save_online_metric = save_online_metric
+        if self.save_online_metric:
+            self.evaluator = load_evaluator("labeled_score_string", llm=llm.llm, normalize_by=10)
 
     def get_data(self, history: List[BaseMessage]):
         rag_answer = history[-1].content
@@ -46,6 +51,18 @@ class AnswerNode(_BaseNode):
 
         answer = self.chain.invoke({"summary": summary, "data": data})
 
+        if self.save_online_metric:
+            print("ASD")
+            print(answer)
+            print(data[next(iter(data))])
+            print(summary)
+            score = self.evaluator.evaluate_strings(
+                prediction=answer,
+                reference=data[next(iter(data))],
+                input=summary,
+            )["score"]
+            state.hallucination.append(score)
+
         if self.show_logs:
             print(self.name)
             print(f"User query: {summary}")
@@ -54,4 +71,4 @@ class AnswerNode(_BaseNode):
 
         history.append(AIMessage(name="HealthNode", content=answer))
 
-        return {"history": history, "catalog_name": state.catalog_name}
+        return {"history": history, "catalog_name": state.catalog_name, "hallucination": state.hallucination}
