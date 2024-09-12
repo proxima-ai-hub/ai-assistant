@@ -132,6 +132,12 @@ dist
 # env file
 .env
 
+# venv file
+.venv
+
+# idea file
+.idea
+
 # cache
 __pycache__/
 
