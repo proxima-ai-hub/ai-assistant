@@ -1,12 +1,12 @@
-from schema import Message
 from fastapi import FastAPI
-from celery.result import AsyncResult
-from celery_worker import generate_text_task
+from schema import  RequsetHistory
 from fastapi.middleware.cors import CORSMiddleware
+from agent.graphs import ConsultantGraph
 
 app = FastAPI(title='Proxima')
 
 origins = ["http://0.0.0.0:80","http://localhost:4200"]
+agent = ConsultantGraph()
 
 app.add_middleware(
     CORSMiddleware,
@@ -16,32 +16,10 @@ app.add_middleware(
     allow_headers=["Content-Type", "Set-Cookie", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin","Authorization"],
 )
 
-@app.get("/messages")
-async def healthcheck():
-    messages = [
-        {
-        "text":'Здравствуйте! Чем могу помочь ?',
-        "type": 'bot'
-        },
-        # {
-        # "text":'Здравствуйте! Могли бы вы мне ответить на ...',
-        # "type": 'human'
-        # }
-        ]
-                
-    return {'status': 200, 'message': messages}
 
-@app.post("/generateText")
-async def generate_text(prompt: Message):
-    task = generate_text_task.delay(prompt.text)
-    return {"task_id": task.id}
-
-@app.get("/task/{task_id}")
-async def get_generate_text(task_id: str):
-    task = AsyncResult(task_id)
-    choice=task.ready()
-    if choice:
-        task_result = task.get()
-        return {"result": task_result}
-    else:
-        return {"status": "Task Pending"}
+@app.post("/api/v1/agent/get_answer")
+async def generate_text(request: RequsetHistory):
+    prompt = " ".join([msg.content for msg in request.history if msg.role == "user"])
+    answer = agent.invoke(prompt).content
+    agent.clear_history()
+    return {"answer": answer}

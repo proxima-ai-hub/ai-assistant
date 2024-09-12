@@ -1,4 +1,9 @@
 from pydantic import BaseModel
+from typing import List
 
 class Message(BaseModel):
-    text: str
+    role: str
+    content: str
+
+class RequsetHistory(BaseModel):
+    history: List[Message]
