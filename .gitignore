@@ -144,3 +144,4 @@ __pycache__/
 # data
 agent/database/case_datasets/
 agent/database/qdrant_db/
+data/qdrant_storage/*
