@@ -32,8 +32,8 @@ async def healthcheck():
     return {'status': 200, 'message': messages}
 
 @app.post("/generateText")
-async def generate_text(prompt: Message):
-    task = generate_text_task.delay(prompt.text)
+async def generate_text(text: str):
+    task = generate_text_task.delay(text)
     return {"task_id": task.id}
 
 @app.get("/task/{task_id}")

@@ -6,8 +6,8 @@ API_PORT = 8000
 
 
 def generate_text(prompt):
-    url = "http://localhost:8000/generateText/"
-    data = {"prompt": prompt}
+    url = "http://89.169.151.229:8000/generateText/"
+    data = {"text": prompt}
     response = requests.post(url, json=data)
     if response.status_code == 200:
         result = response.json()
@@ -16,7 +16,7 @@ def generate_text(prompt):
         print('Error ', response.status_code)
 
 def get_task_status(task_id):
-    url = f"http://localhost:8000/task/{task_id['task_id']}"
+    url = f"http://89.169.151.229:8000/task/{task_id['task_id']}"
     print('URL ', url)
     response = requests.get(url)
     if response.status_code == 200:
