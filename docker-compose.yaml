@@ -38,3 +38,10 @@ services:
     image: "redis:alpine"
     ports:
       - 6380:6379
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - ./data/qdrant_storage:/qdrant/storage  
