@@ -16,9 +16,9 @@ http://176.114.66.132:8000/docs
 foo@bar:~$ git clone https://github.com/proxima-ai-hub/ai-assistant.git
 ```
 
-### 2. Install model
+### 2. Install model LLama3.1
 ```
-cd ai-assistant
+foo@bar:~$ cd ai-assistant
 
 foo@bar:~$ curl -fsSL https://ollama.com/install.sh | sh
 
