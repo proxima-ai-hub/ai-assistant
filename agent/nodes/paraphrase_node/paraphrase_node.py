@@ -3,22 +3,23 @@ import json
 from langchain_core.output_parsers import StrOutputParser, BaseOutputParser
 from langchain_core.messages import HumanMessage, AIMessage, FunctionMessage
 
-from .prompt import SUMMARIZATION_NODE_PROMPT
+from .prompt import PARAPHRASE_NODE_PROMPT
 from agent.nodes._base import _BaseNode
 from agent.llms._base import _BaseLLM
 from agent.graphs.state import State
+from agent.data_proc.methods import question_converter
 
 
-class SummarizationNode(_BaseNode):
+class ParaphraseNode(_BaseNode):
     """
-    Summarization Node to summarize user requirements.
+    Paraphrase Node to summarize user requirements.
     """
     def __init__(
             self,
             name: str,
             description: str,
             llm: _BaseLLM,
-            prompt: str = SUMMARIZATION_NODE_PROMPT,
+            prompt: str = PARAPHRASE_NODE_PROMPT,
             output_parser: BaseOutputParser = StrOutputParser(),
             show_logs: bool = False
         ) -> None:
@@ -34,14 +35,14 @@ class SummarizationNode(_BaseNode):
 
     def invoke(self, state: State):
         history = state.history
-        # answer = self.chain.invoke({"query": history[-1].content})
+        answer = question_converter(history[-1].content)
 
         if self.show_logs:
             print(self.name)
             print(f"User query: {history[-1]}")
-            print(f"Model answer: {history[-1].content}")
+            print(f"Model answer: {answer}")
             print("----------------")
 
-        history.append(FunctionMessage(name="SummarizationNode", content=history[-1].content))
+        history.append(FunctionMessage(name="SummarizationNode", content=answer))
 
         return {"history": history, "catalog_name": state.catalog_name}

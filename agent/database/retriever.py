@@ -22,8 +22,7 @@ class Retriever:
             self._device = device
         self._model = self._setup_model()
         
-        save_data_path = Path(__file__).parent.resolve() / "qdrant_db"
-        self._client = QdrantClient(path=save_data_path)
+        self._client = QdrantClient('176.114.66.132', port=6333)
     
     def _setup_model(self):
         if self._model_type == ModelType.RUBERT_TINY_2:

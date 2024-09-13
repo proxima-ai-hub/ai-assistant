@@ -1,5 +1,4 @@
 from typing import Dict, Literal
-from langchain_core.messages import AIMessage
 
 from agent.nodes._base import _BaseRouter
 from agent.graphs.state import State
@@ -7,7 +6,7 @@ from agent.graphs.state import State
 
 class ClassifierRouter(_BaseRouter):
     """
-    Router Node to retranslate classifier node output to RAG or OPERATOR nodes.
+    Router Node to retranslate classifier node output to Retriever or Operator nodes.
     """
     def __init__(
             self,
@@ -19,7 +18,7 @@ class ClassifierRouter(_BaseRouter):
         super().__init__(name, description, mapping)
         self.show_logs = show_logs
 
-    def invoke(self, state: State) -> Literal["rag", "operator"]:
+    def invoke(self, state: State) -> Literal["retriever", "end", "no_info", "operator"]:
         catalog_name = state.catalog_name
 
         if self.show_logs:
@@ -29,7 +28,7 @@ class ClassifierRouter(_BaseRouter):
 
         if catalog_name:
             if catalog_name == "оператор":
-                return "оператор"
+                return "operator"
             elif catalog_name not in (
                 "здоровье",
                 "финансы",
@@ -40,6 +39,6 @@ class ClassifierRouter(_BaseRouter):
             ):
                 return "no_info"
             else:
-                return "rag"
+                return "retriever"
         else:
             return "end"

@@ -2,15 +2,15 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.graph import END, START, StateGraph
 
 from agent.nodes import (
-    ClassifierNode,
-    ClassifierRouter,
-    RAGNode,
-    SummarizationNode,
     SimilarQuestionsNode,
-    AnswerNode,
+    ClassifierRouter,
+    RetrieverRouter,
+    ParaphraseNode,
+    ClassifierNode,
+    RetrieverNode,
     OperatorNode,
+    AnswerNode,
     NoInfoNode,
-    RAGRouter
 )
 from agent.database import Retriever, ModelType
 from agent.llms import LlamaLLM
@@ -33,9 +33,9 @@ class ConsultantGraph:
         retriever = Retriever(ModelType.DEEPVK_USER)
         
         # Initialize nodes
-        summarization_node = SummarizationNode(
-            name="Summarization Node",
-            description=SummarizationNode.__doc__,
+        paraphrase_node = ParaphraseNode(
+            name="ParaphraseNode",
+            description=ParaphraseNode.__doc__,
             llm=self.llm,
             show_logs=self.show_logs
         )
@@ -55,16 +55,16 @@ class ConsultantGraph:
             name="Classifier Router",
             description=ClassifierRouter.__doc__,
             mapping={
-                "rag": "rag",
-                "оператор": "operator",
+                "retriever": "retriever",
+                "operator": "operator",
                 "no_info": "no_info",
                 "end": END,
             },
             show_logs=self.show_logs
         )
-        rag_node = RAGNode(
-            name="RAGNode",
-            description=RAGNode.__doc__,
+        retriever_node = RetrieverNode(
+            name="RetrieverNode",
+            description=RetrieverNode.__doc__,
             retriever=retriever,
             show_logs=self.show_logs,
         )
@@ -84,9 +84,9 @@ class ConsultantGraph:
             name="NoInfoNode",
             description=NoInfoNode.__doc__,
         )
-        rag_router = RAGRouter(
-            name="RAGRouter",
-            description=RAGRouter.__doc__,
+        retriever_router = RetrieverRouter(
+            name="RetrieverRouter",
+            description=RetrieverRouter.__doc__,
             mapping={
                 "answer": "answer",
                 "no_info": "no_info"
@@ -95,17 +95,17 @@ class ConsultantGraph:
         )
 
         # Add nodes to graph
-        graph.add_node("summarization", summarization_node.invoke)
+        graph.add_node("paraphrase", paraphrase_node.invoke)
         graph.add_node("classifier", classifier_node.invoke)
         graph.add_node("similar_questions", similar_questions_node.invoke)
-        graph.add_node("rag", rag_node.invoke)
+        graph.add_node("retriever", retriever_node.invoke)
         graph.add_node("answer", answer_node.invoke)
         graph.add_node("operator", operator_node.invoke)
         graph.add_node("no_info", no_info_node.invoke)
 
         # Set up graph relations
-        graph.add_edge(START, "summarization")
-        graph.add_edge("summarization", "similar_questions")
+        graph.add_edge(START, "paraphrase")
+        graph.add_edge("paraphrase", "similar_questions")
         graph.add_edge("similar_questions", "classifier")
         graph.add_conditional_edges(
             "classifier",
@@ -113,9 +113,9 @@ class ConsultantGraph:
             classifier_router.mapping,
         )
         graph.add_conditional_edges(
-            "rag",
-            rag_router.invoke,
-            rag_router.mapping,
+            "retriever",
+            retriever_router.invoke,
+            retriever_router.mapping,
         )
         graph.add_edge("answer", END)
         graph.add_edge("operator", END)

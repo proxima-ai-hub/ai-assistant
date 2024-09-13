@@ -7,11 +7,10 @@ from agent.llms._base import _BaseLLM
 from agent.graphs import State
 
 
-class RAGNode(_BaseNode):
+class RetrieverNode(_BaseNode):
     """
-    RAG Node to pull relevant information based on user input.
+    Retriever Node to pull relevant information based on user input.
     """
-    # DATABASE_COLLECTION_NAME = "original_data_collection"
     DATABASE_COLLECTION_NAME = "original_data_deepvk_collection"
 
     def __init__(
@@ -34,7 +33,7 @@ class RAGNode(_BaseNode):
         catalog_name = state.catalog_name
         retrieved_info = self.retriever.search(
             query=self.get_summary(history),
-            collection_name=RAGNode.DATABASE_COLLECTION_NAME,
+            collection_name=RetrieverNode.DATABASE_COLLECTION_NAME,
             filter_options={"catalog": catalog_name},
             topk=5,
             score_threshold=0.5
@@ -47,6 +46,6 @@ class RAGNode(_BaseNode):
             print(f"Retrieved data: {retrieved_info}")
             print("----------------")
 
-        history.append(FunctionMessage(name="RAGNode", content=retrieved_info))
+        history.append(FunctionMessage(name="RetrieverNode", content=retrieved_info))
 
         return {"history": history, "catalog_name": catalog_name}

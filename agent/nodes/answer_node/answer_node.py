@@ -52,10 +52,6 @@ class AnswerNode(_BaseNode):
         answer = self.chain.invoke({"summary": summary, "data": data})
 
         if self.save_online_metric:
-            print("ASD")
-            print(answer)
-            print(data[next(iter(data))])
-            print(summary)
             score = self.evaluator.evaluate_strings(
                 prediction=answer,
                 reference=data[next(iter(data))],
