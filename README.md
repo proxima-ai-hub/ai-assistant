@@ -18,21 +18,21 @@ foo@bar:~$ git clone https://github.com/proxima-ai-hub/ai-assistant.git
 
 ### 2. Install dependencies
 ```
-foo@bar:~$ pip3 install -r requirements.txt
+foo@bar:~$ 
 ```
 
-### 3. Run application from root folder backend
+### 3. ...
 ```
-foo@bar:~$ python3 app.py 
+foo@bar:~$ 
 ```
 
-### 3. Run application from root folder backend
+### 4. ...
 ```
-foo@bar:~$ python3 app.py 
+foo@bar:~$ 
 ```
-### 3. Run application from root folder backend
+### N. Run application from root folder backend
 ```
-foo@bar:~$ python3 app.py 
+foo@bar:~$ 
 ```
 
 
@@ -77,7 +77,6 @@ foo@bar:~$ python3 app.py
   - Проводил эксперименты с разными моделями, энкодерами, параметрами LLM с последующей оценкой качества.
   - Занимался оптимизацией архитектуры, написанием и тюнингом промптов.
   - Помогал в развертывании приложения на удаленном сервере.
-  - 
 
 ## Технологический стек
 - **Фронтенд**: AngularJS
