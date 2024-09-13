@@ -2,13 +2,39 @@
 Assistant генерирует полезные текстовые ответы на запросы в рамках #8 кейса.
 Специальные навыки формулировки не требуются: просто опишите ситуацию и получите целевую помощь!
 
-### Развернуты тестовый API:
+### Deployed Demo API:
 http://176.114.66.132:8000/docs
 
 ![Demo](assets/demo_swagger_screen.png "API demo")
 
 ## Pipeline
 ![Pipeline](assets/pipeline_scheme.jpg "Pipeline")
+
+## How To Use
+### 1. Clone repo to server
+```
+foo@bar:~$ git clone https://github.com/proxima-ai-hub/ai-assistant.git
+```
+
+### 2. Install dependencies
+```
+foo@bar:~$ pip3 install -r requirements.txt
+```
+
+### 3. Run application from root folder backend
+```
+foo@bar:~$ python3 app.py 
+```
+
+### 3. Run application from root folder backend
+```
+foo@bar:~$ python3 app.py 
+```
+### 3. Run application from root folder backend
+```
+foo@bar:~$ python3 app.py 
+```
+
 
 ## Участники команды Proxima и их роли
 
@@ -30,10 +56,10 @@ http://176.114.66.132:8000/docs
 ### 3. **Ричард** - Backend/MLOps инженер
 - **Ответственности**:
   - Настроил и конфигурировал инфраструктуру бэкенда.
-  - Разработал и поддерживал API для взаимодействия между фронтендом и бекендом.
-  - Реализовал DevOps и MLOps процессы для автоматизации разработки и развёртывания.
-  - Обеспечил рабочие среды для обучения моделей и их развёртывание.
-  - Учавствовал в разработке архитектуры проекта.
+  - Разработал и поддерживал API для взаимодействия между фронтендом и моделью.
+  - Реализовал Dev/ML-Ops процессы для автоматизации разработки и развёртывания.
+  - Настраивал и запускал API на удаленном сервере, обеспечивая его интеграцию с моделью.
+  - Разрабатывал архитектуру проекта.
 
 ### 4. **Семён** - ML Engineer
 - **Выполненные задачи**:
