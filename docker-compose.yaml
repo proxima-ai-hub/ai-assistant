@@ -2,6 +2,16 @@ version: "3.8"
 
 services:
 
+  web:
+    container_name: web
+    restart: always  
+    build: 
+      context: ./frontend
+    ports:
+      - "80:80"
+    expose:
+      - 80  
+
   api:
     build: 
       context: ./backend
@@ -9,21 +19,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - 8000:80
-    depends_on:
-      - redis
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-  
-  worker:
-    build: 
-      context: ./backend
-    command: celery -A celery_worker worker -P solo --loglevel=info
+      - 8000:8000
     depends_on:
       - redis
     deploy:
@@ -34,7 +30,9 @@ services:
               count: 1
               capabilities: [gpu]
 
-  redis:
-    image: "redis:alpine"
-    ports:
-      - 6380:6379
+  qdrant:
+      image: qdrant/qdrant:latest
+      ports:
+        - "6333:6333"
+      volumes:
+        - ./data/qdrant_storage:/qdrant/storage  

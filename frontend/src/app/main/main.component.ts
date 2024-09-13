@@ -46,11 +46,23 @@ export class MainComponent implements OnInit {
     this.istyping = true;
     
     if (promptToSend) {
-
       const data = this.fb.group({ text: promptToSend });
-      this.service.handle_post_requests(data.value, 'generateText').subscribe(response => {
-        this.checkTaskStatus(response['task_id']);
+
+      const reqBody = {
+        "history": [
+          {
+            "role": "user",
+            "content": promptToSend
+          }
+        ]
+      }
+
+      this.service.handle_post_requests(reqBody, 'get_answer').subscribe(response => {
       
+        this.istyping = false;
+        this.isPlaying = false;
+        this.messages.push({ 'text': response['answer'], 'type': 'bot' })
+
       }, async (err) => {
       
         await this.sleep(2000);
