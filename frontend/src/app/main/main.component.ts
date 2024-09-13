@@ -58,19 +58,13 @@ export class MainComponent implements OnInit {
       }
 
       this.service.handle_post_requests(reqBody, 'get_answer').subscribe(response => {
-        // this.checkTaskStatus(response.toString());
       
-        console.log('response')
-        console.log(response);
-
         this.istyping = false;
         this.isPlaying = false;
         this.messages.push({ 'text': response['answer'], 'type': 'bot' })
 
       }, async (err) => {
       
-        console.log()
-
         await this.sleep(2000);
         this.istyping = false;
         this.messages.push({ 'text': "Извините, мы позже вернемся к Вашему вопросу.", 'type': 'bot' })
