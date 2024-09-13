@@ -11,6 +11,7 @@ http://176.114.66.132:8000/docs
 ![Pipeline](assets/pipeline_scheme.jpg "Pipeline")
 
 ## How To Use
+
 ### 1. Clone repo to server
 ```
 foo@bar:~$ git clone https://github.com/proxima-ai-hub/ai-assistant.git
@@ -37,6 +38,13 @@ foo@bar:~$
 ### N. Run application from root folder backend
 ```
 foo@bar:~$ 
+```
+
+### Run frontend from root folder backend
+```
+cd ai-assistant/frontend
+
+npm build && npm start
 ```
 
 
