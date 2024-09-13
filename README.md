@@ -16,12 +16,16 @@ http://176.114.66.132:8000/docs
 foo@bar:~$ git clone https://github.com/proxima-ai-hub/ai-assistant.git
 ```
 
-### 2. Install dependencies
+### 2. Install model
 ```
-foo@bar:~$ 
+cd ai-assistant
+
+foo@bar:~$ curl -fsSL https://ollama.com/install.sh | sh
+
+foo@bar:~$ ollama create temp0:latest -f Modefile
 ```
 
-### 3. ...
+### 3. Install dependencies
 ```
 foo@bar:~$ 
 ```
