@@ -7,6 +7,11 @@ http://176.114.66.132:8000/docs
 
 ![Demo](assets/demo_swagger_screen.png "API demo")
 
+### Try our UI
+http://89.169.151.229/
+
+![Demo](assets/demo_ui.png "UI demo")
+
 ## Pipeline
 ![Pipeline](assets/pipeline_scheme.jpg "Pipeline")
 

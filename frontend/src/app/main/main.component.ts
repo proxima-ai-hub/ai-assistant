@@ -20,12 +20,8 @@ export class MainComponent implements OnInit {
 
   constructor(private service: UserService, private fb: FormBuilder) { }
 
-  ngOnInit(): void { this.getMessages(); }
+  ngOnInit(): void { }
 
-  getMessages(): void {
-    this.service.getMessages().subscribe(
-      data => this.messages = data['message']);
-  }
 
   async sendMessage() {
     if (!this.prompt.trim() || this.isPlaying) {
