@@ -1,5 +1,7 @@
 # Backend
 
+
+
 apt install python3-pip
 apt install python3.12-venv
 
@@ -16,6 +18,8 @@ ollama create temp0:latest -f Modefile
 pip install fastapi
 apt install uvicorn
 sudo apt-get install coreutils
+
+pip install langchain_community
 
 Скачиваем модель
 curl -fsSL https://ollama.com/install.sh | sh
