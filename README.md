@@ -14,33 +14,58 @@ http://176.114.66.132:8000/docs
 
 ### 1. Clone repo to server
 ```
-foo@bar:~$ git clone https://github.com/proxima-ai-hub/ai-assistant.git
+git clone https://github.com/proxima-ai-hub/ai-assistant.git
 ```
 
 ### 2. Install model LLama3.1
 ```
-foo@bar:~$ cd ai-assistant
-
-foo@bar:~$ curl -fsSL https://ollama.com/install.sh | sh
-
-foo@bar:~$ ollama create temp0:latest -f Modefile
+cd ai-assistant
+curl -fsSL https://ollama.com/install.sh | sh
+ollama create temp0:latest -f Modefile
 ```
 
 ### 3. Install dependencies
 ```
-foo@bar:~$ 
+pip install poetry
+poetry install
 ```
 
-### 4. ...
+### Additional
+If you have GPU to run local models, install pytorch based on your cuda version.
 ```
-foo@bar:~$ 
-```
-### N. Run application from root folder backend
-```
-foo@bar:~$ 
+pip install torch torchvision torchaudio
 ```
 
-### Run frontend from root folder backend
+### 4. Install uvicorn in order to deploy application
+```
+pip install uvicorn
+```
+
+### 5. Create new collection
+Make sure qdrant client is running in container
+```shell
+docker compose up qdrant -d
+```
+
+```Python
+from agent.database.retriever import Retriever, ModelType
+
+retriever = Retriever(model_type=ModelType.DEEPVK_USER, device=0)
+retriever.create_database(path_to_data="<your_path_to_data>",
+                          collection_name="<your_collection_name>")
+
+```
+Or run the following script
+```Python
+python agent/database/initialize_database.py
+```
+
+### 6. Run application
+```shell
+uvicorn app:app --host 0.0.0.0 --port 8000
+```
+
+### 7. Run frontend from root folder backend
 ```
 cd ai-assistant/frontend
 
@@ -66,7 +91,7 @@ npm build && npm start
   - Интегрировала UI с API, предоставленными командой DevOps.
 
 ### 3. **Ричард** - Backend/MLOps инженер
-- **Ответственности**:
+- **Выполненные задачи**:
   - Настроил и конфигурировал инфраструктуру бэкенда.
   - Разработал и поддерживал API для взаимодействия между фронтендом и моделью.
   - Реализовал Dev/ML-Ops процессы для автоматизации разработки и развёртывания.

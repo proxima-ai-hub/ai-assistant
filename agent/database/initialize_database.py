@@ -5,11 +5,10 @@ from agent.database.retriever import Retriever, ModelType
 
 if __name__ == "__main__":
     retriever = Retriever(model_type=ModelType.DEEPVK_USER, device=0)
-    retriever.create_database(
-        Path(__file__).parent.resolve() / "case_datasets" / "original_data.csv",
-        "original_data_deepvk_collection"
-    )
+    retriever.create_database(path_to_data="<your_path_to_data>",
+                              collection_name="<your_collection_name>")
 
+    # Test it works
     print(retriever.search(
         "В личном кабинете нет вкладки передать в архив",
         "original_data_deepvk_collection",
